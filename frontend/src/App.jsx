@@ -3,7 +3,8 @@ import { supabase } from './supabaseClient';
 import axios from 'axios';
 import { Dumbbell, LogOut, Plus, Trash2, Calendar, ChevronRight, ArrowLeft, Edit2, X } from 'lucide-react';
 
-const API_URL = import.meta.env.VITE_API_URL || '';
+
+const baseURL = import.meta.env.DEV ? 'http://localhost:5000' : '';
 
 function Auth({ onAuthSuccess }) {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -127,7 +128,7 @@ function CreateWorkoutModal({ onClose, onWorkoutCreated, session }) {
 
     try {
       const response = await axios.post(
-        `${API_URL}/workouts`,
+        `${API_URL}/api/workouts`,
         { name, workout_date: date, notes },
         {
           headers: {
@@ -218,7 +219,7 @@ function WorkoutsList({ workouts, onSelectWorkout, onDeleteWorkout, session }) {
     setDeleting(id);
 
     try {
-      await axios.delete(`${API_URL}/workouts/${id}`, {
+      await axios.delete(`${API_URL}/api/workouts/${id}`, {
         headers: {
           Authorization: `Bearer ${session.access_token}`
         }
@@ -302,7 +303,7 @@ function ExerciseForm({ workoutId, onExerciseAdded, session }) {
 
     try {
       const response = await axios.post(
-        `${API_URL}/workouts/${workoutId}/exercises`,
+        `${API_URL}/api/workouts/${workoutId}/api/exercises`,
         {
           exercise_name: exercise,
           sets: parseInt(sets),
@@ -414,7 +415,7 @@ function ExercisesList({ exercises, onDeleteExercise, session }) {
     setDeleting(id);
 
     try {
-      await axios.delete(`${API_URL}/exercises/${id}`, {
+      await axios.delete(`${API_URL}/api/exercises/${id}`, {
         headers: {
           Authorization: `Bearer ${session.access_token}`
         }
@@ -503,7 +504,7 @@ function WorkoutDetail({ workout, session, onBack }) {
   const fetchExercises = async () => {
     try {
       const response = await axios.get(
-        `${API_URL}/workouts/${workout.id}/exercises`,
+        `${API_URL}/api/workouts/${workout.id}/api/exercises`,
         {
           headers: {
             Authorization: `Bearer ${session.access_token}`
@@ -596,7 +597,7 @@ function Dashboard({ user, session, onSignOut }) {
 
   const fetchWorkouts = async () => {
     try {
-      const response = await axios.get(`${API_URL}/workouts`, {
+      const response = await axios.get(`${API_URL}/api/workouts`, {
         headers: {
           Authorization: `Bearer ${session.access_token}`
         }
